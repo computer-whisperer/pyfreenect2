@@ -1,5 +1,6 @@
 #include "pyfreenect2.hpp"
 #include <iostream>
+#include <Python.h>
 
 static PyMethodDef pyfreenect2Methods[] = {
 	// Freenect2
@@ -32,12 +33,23 @@ static PyMethodDef pyfreenect2Methods[] = {
 	{ NULL, NULL, 0, NULL}
 };
 
-PyMODINIT_FUNC init_pyfreenect2() {
+static struct PyModuleDef pyfreenect2 = {
+   PyModuleDef_HEAD_INIT,
+   "pyfreenect2",   /* name of module */
+   NULL, /* module documentation, may be NULL */
+   -1,       /* size of per-interpreter state of the module,
+                or -1 if the module keeps state in global variables. */
+   pyfreenect2Methods
+};
+
+PyMODINIT_FUNC PyInit_pyfreenect2() {
 
   /// enables debug of libfreenect2
   ///libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Debug));
 
   import_array();
-  Py_InitModule("_pyfreenect2", pyfreenect2Methods);
+  PyObject *m;
+  m = PyModule_Create(&pyfreenect2);
   import_array();
+  return m;
 }
